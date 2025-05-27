@@ -2,8 +2,9 @@
 
 import MobileLayout from "../components/MobileLayout";
 import DesktopLayout from "../components/DesktopLayout";
+import DesktopTourDatesPage from "../components/_ui/(desktop)/TourDates";
 
-export default function DashboardPage() {
+export default function TourDatesPage() {
   return (
     <>
       <MobileLayout>
@@ -13,7 +14,7 @@ export default function DashboardPage() {
       </MobileLayout>
 
       <DesktopLayout>
-        <h2>🖥️ Desktop Dashboard</h2>
+        <DesktopTourDatesPage />
       </DesktopLayout>
     </>
   );

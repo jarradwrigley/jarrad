@@ -8,6 +8,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "museo";
+  src: url("/fonts/museo-slab-w01-100.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -53,6 +61,7 @@
       100%,
       rgba(47, 46, 46, 0) 100%
     );
+    --shadowy: rgba(0, 0, 0, 0.498039) -1px -1px 0px, rgba(0, 0, 0, 0.498039) -1px 1px 0px, rgba(0, 0, 0, 0.498039) 1px 1px 0px, rgba(0, 0, 0, 0.498039) 1px -1px 0px
 }
 
 @theme inline {
@@ -90,6 +99,22 @@ body {
   min-height: 100dvh;
   padding: 40px;
 }
+
+/* styles/globals.css */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 
 @media (max-width: 768px) {
   .desktop-only {

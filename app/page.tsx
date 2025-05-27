@@ -17,7 +17,7 @@ export default function HomePage() {
   useEffect(() => {
     const initializeData = async () => {
       if (!hasInitialized) {
-        console.log("[HomePage] Initializing data fetch...");
+        // console.log("[HomePage] Initializing data fetch...");
         await fetchHomeData();
         setHasInitialized(true);
       }

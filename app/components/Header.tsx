@@ -62,9 +62,9 @@ const Header = () => {
             <Link href="/about" className={linkClass("/about")}>
               ABOUT
             </Link>
-            <Link href="/epk" className={linkClass("/epk")}>
+            {/* <Link href="/epk" className={linkClass("/epk")}>
               EPK
-            </Link>
+            </Link> */}
             <Link href="/contact" className={linkClass("/contact")}>
               CONTACT
             </Link>
@@ -78,7 +78,10 @@ const Header = () => {
 
           {/* Social Media Icons */}
           <div className="flex items-center gap-[18px]">
-            <Link href="#" className="hover:opacity-80 transition-opacity">
+            <Link
+              href="https://open.spotify.com/artist/4raNm4nBXeOJ1TDJumWcFv?si=4nemvyhAQH61XN5nutU_kQ"
+              className="hover:opacity-80 transition-opacity"
+            >
               <Image
                 src="/icons/spotify.svg"
                 alt="Spotify"
@@ -86,7 +89,10 @@ const Header = () => {
                 height={24}
               />
             </Link>
-            <Link href="#" className="hover:opacity-80 transition-opacity">
+            <Link
+              href="https://music.apple.com/au/artist/jarrad-wrigley/1608127131"
+              className="hover:opacity-80 transition-opacity"
+            >
               <Image
                 src="/icons/apple-music.svg"
                 alt="Apple Music"
@@ -94,7 +100,10 @@ const Header = () => {
                 height={24}
               />
             </Link>
-            <Link href="#" className="hover:opacity-80 transition-opacity">
+            <Link
+              href="https://www.youtube.com/user/Wix"
+              className="hover:opacity-80 transition-opacity"
+            >
               <Image
                 src="/icons/youtube.svg"
                 alt="YouTube"
@@ -102,7 +111,10 @@ const Header = () => {
                 height={24}
               />
             </Link>
-            <Link href="#" className="hover:opacity-80 transition-opacity">
+            <Link
+              href="https://www.tiktok.com/@wix"
+              className="hover:opacity-80 transition-opacity"
+            >
               <Image
                 src="/icons/tiktok.svg"
                 alt="TikTok"
@@ -110,7 +122,10 @@ const Header = () => {
                 height={24}
               />
             </Link>
-            <Link href="#" className="hover:opacity-80 transition-opacity">
+            <Link
+              href="https://www.tiktok.com/@wix"
+              className="hover:opacity-80 transition-opacity"
+            >
               <Image
                 src="/icons/facebook.svg"
                 alt="Facebook"
