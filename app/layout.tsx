@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lazada",
-  description: "Market of The Future",
+  title: "Jarrad Wrigley | Country Artist",
+  description:
+    "Official website of Jarrad Wrigley, a country artist from Australia. Explore music, videos, and tour dates.",
 };
 
 export default function RootLayout({
@@ -32,6 +33,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap"
           rel="stylesheet"
         />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+          rel="stylesheet"
+        ></link>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

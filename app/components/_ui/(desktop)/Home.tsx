@@ -1,7 +1,14 @@
 export default function DesktopHomePage() {
   return (
     <>
-     <div>Desktop</div>
+      <div
+        style={{
+          background: "var(--bg-gradient)",
+        }}
+        className="w-full px-[5rem] py-[2rem] "
+      >
+        Desktop
+      </div>
     </>
   );
 }
