@@ -51,6 +51,7 @@ const protectedRoutes = [
   "/upload",
   "/manage-tours",
   "/manage-content",
+  "/admin/dashboard"
 ];
 
 const publicRoutes = [
