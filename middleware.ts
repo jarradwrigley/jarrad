@@ -40,151 +40,95 @@
 // };
 
 
-// middleware.ts
-import { NextRequest, NextResponse } from 'next/server'
-import { jwtVerify } from 'jose'
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 
-// Define protected routes that require authentication
 const protectedRoutes = [
-  '/admin',
-  '/dashboard',
-  '/profile',
-  '/settings',
-  '/upload',
-  '/manage-tours',
-  '/manage-content'
-]
+  "/admin",
+  "/dashboard",
+  "/profile",
+  "/settings",
+  "/upload",
+  "/manage-tours",
+  "/manage-content",
+];
 
-// Define public routes that don't require authentication
 const publicRoutes = [
-  '/',
-  '/about',
-  '/tour-dates',
-  '/contact',
-  '/blog',
-  '/shop',
-  '/epk',
-  '/login',
-  '/register',
-  '/forgot-password'
-]
+  "/",
+  "/about",
+  "/tour-dates",
+  "/contact",
+  "/blog",
+  "/shop",
+  "/epk",
+  "/login",
+  "/register",
+  "/forgot-password",
+];
 
-// Define admin-only routes
-const adminRoutes = [
-  '/admin',
-  '/manage-tours',
-  '/manage-content',
-  '/dashboard'
-]
+type SessionUser = {
+  roles: string[];
+  [key: string]: any;
+};
+
+type Session = {
+  user?: SessionUser;
+  [key: string]: any;
+};
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  
-  // Skip middleware for static files, API routes, and Next.js internals
+  const { pathname } = request.nextUrl;
+
+  const session = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  }) as Session;
+
+  // Skip internal/static paths
   if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
-    pathname.startsWith('/assets') ||
-    pathname.includes('.')
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/assets") ||
+    pathname.includes(".")
   ) {
-    return NextResponse.next()
+    return NextResponse.next();
   }
 
-  // Check if the current path is a protected route
-  const isProtectedRoute = protectedRoutes.some(route => 
+  const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
-  )
-  
-  // Check if the current path is an admin route
-  const isAdminRoute = adminRoutes.some(route => 
-    pathname.startsWith(route)
-  )
+  );
 
-  // Get token from cookies
-  const token = request.cookies.get('auth-token')?.value
-  
-  // If accessing a protected route without a token, redirect to login
-  if (isProtectedRoute && !token) {
-    const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(loginUrl)
+  // if (req.nextUrl.pathname.startsWith("/admin")) {
+  //   if (!token || token.role !== "admin") {
+  //     return NextResponse.redirect(new URL("/login", req.url));
+  //   }
+  // }
+
+
+
+  // Redirect unauthenticated users trying to access protected routes
+  if (isProtectedRoute && !session) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // If token exists, verify it
-  if (token) {
-    try {
-      const secret = new TextEncoder().encode(
-        process.env.JWT_SECRET || 'your-secret-key'
-      )
-      
-      const { payload } = await jwtVerify(token, secret)
-      
-      // Check if token is expired
-      if (payload.exp && payload.exp < Date.now() / 1000) {
-        // Token expired, clear cookie and redirect to login
-        const response = NextResponse.redirect(new URL('/login', request.url))
-        response.cookies.delete('auth-token')
-        return response
-      }
-
-      // Check admin access for admin routes
-      if (isAdminRoute && payload.role !== 'admin') {
-        return NextResponse.redirect(new URL('/unauthorized', request.url))
-      }
-
-      // Add user info to request headers for use in components
-      const requestHeaders = new Headers(request.headers)
-      requestHeaders.set('x-user-id', payload.userId as string)
-      requestHeaders.set('x-user-email', payload.email as string)
-      requestHeaders.set('x-user-role', payload.role as string)
-
-      return NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      })
-      
-    } catch (error) {
-      // Invalid token, clear cookie and redirect to login if accessing protected route
-      console.error('Token verification failed:', error)
-      
-      if (isProtectedRoute) {
-        const response = NextResponse.redirect(new URL('/login', request.url))
-        response.cookies.delete('auth-token')
-        return response
-      }
-    }
+  // Redirect authenticated users away from login page
+  if (session && pathname === "/login") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // If user is already logged in and tries to access login page, redirect to dashboard
-  if (token && pathname === '/login') {
-    try {
-      const secret = new TextEncoder().encode(
-        process.env.JWT_SECRET || 'your-secret-key'
-      )
-      await jwtVerify(token, secret)
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    } catch {
-      // Invalid token, allow access to login page
-      const response = NextResponse.next()
-      response.cookies.delete('auth-token')
-      return response
-    }
-  }
+  // if (pathname.startsWith("/admin") ) {
+  //   if (!session || !session?.user?.roles.includes("admin")) {
+  //     return NextResponse.redirect(new URL("/login", request.url));
+  //   }
+  // }
 
-  return NextResponse.next()
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - assets (public assets)
-     */
     "/((?!api|_next/static|_next/image|images/|assets/|icons/|fonts/|favicon.ico).*)",
   ],
 };

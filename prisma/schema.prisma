@@ -1,20 +1,44 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlserver"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String @id @default(cuid())
-  username String @unique
-  password String // This will store a hashed password
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  username  String   @unique
+  name      String?
+  password  String
+  profilePic  String
+  roles      String[]   @default(["user"]) // add this
+  cart      CartItem[]
+  orders    Order[]
+}
+
+model Product {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  price     Float
+  stock     Int
+  createdAt DateTime @default(now())
+}
+
+model CartItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String
+  quantity  Int
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model Order {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  total     Float
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
 }

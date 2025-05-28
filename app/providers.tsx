@@ -10,11 +10,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <ThemeProvider attribute="class" enableSystem defaultTheme="system">
-        <LayoutWrapper>
+        {/* <LayoutWrapper> */}
           <LoadingScreen />
 
           {children}
-        </LayoutWrapper>
+        {/* </LayoutWrapper> */}
         <Toaster position="top-right" richColors />
       </ThemeProvider>
     </SessionProvider>
