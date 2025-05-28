@@ -110,12 +110,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (pathname === "/admin") {
-    if (!session ) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    } 
+  if (session && pathname === "/admin") {
+   
     
-    if (session && !session.roles?.includes("admin")) {
+    if (!session.roles?.includes("admin")) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
