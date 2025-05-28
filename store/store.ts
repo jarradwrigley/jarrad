@@ -151,7 +151,7 @@ export const useStore = create<AppState>((set, get) => ({
         username,
         password,
         redirect: false,
-        callbackUrl: returnUrl || "/dashboard",
+        callbackUrl: returnUrl || "/",
       });
 
       if (result?.error) {

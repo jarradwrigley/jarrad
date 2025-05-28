@@ -11,7 +11,7 @@ function LoginForm() {
   const { login, isLoading, error, clearError, setLoading } = useStore();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/dashboard";
+  const redirect = searchParams.get("redirect") || "/";
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,19 +21,13 @@ function LoginForm() {
 
     setLoading(true);
     try {
-      const result = await signIn("mock", {
-        username,
-        password,
-        redirect: false,
-      });
+      const result = await login(username, password);
 
-      if (result?.ok) {
-        router.push("/dashboard");
-      } else {
-        showError("Invalid credentials");
+      if (result.success) {
+        router.push("/");
       }
-    } catch (err) {
-      showError("Login failed. Try again later.");
+    } catch (error) {
+      showError("Login failed. Try again later");
     } finally {
       setLoading(false);
     }

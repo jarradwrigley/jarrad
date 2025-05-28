@@ -107,7 +107,7 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from login page
   if (session && pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   if (pathname === "/admin") {
@@ -116,7 +116,7 @@ export async function middleware(request: NextRequest) {
     } 
     
     if (session && !session.roles?.includes("admin")) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
