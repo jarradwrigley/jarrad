@@ -39,7 +39,6 @@
 //   ],
 // };
 
-
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -51,7 +50,7 @@ const protectedRoutes = [
   "/upload",
   "/manage-tours",
   "/manage-content",
-  "/admin/dashboard"
+  "/admin/dashboard",
 ];
 
 const publicRoutes = [
@@ -80,10 +79,10 @@ type Session = {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const session = await getToken({
+  const session = (await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
-  }) as Session;
+  })) as Session;
 
   // Skip internal/static paths
   if (
@@ -99,7 +98,6 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-
   // Redirect unauthenticated users trying to access protected routes
   if (isProtectedRoute && !session) {
     const loginUrl = new URL("/login", request.url);
@@ -112,13 +110,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  
-
-  if (pathname.startsWith("/admin") ) {
-    if (!session || !session?.roles.includes("admin")) {
+  if (pathname === "/admin") {
+    if (!session ) {
       return NextResponse.redirect(new URL("/login", request.url));
+    } 
+    
+    if (session && !session.roles?.includes("admin")) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
+
+  // if (pathname.startsWith("/admin") ) {
+  //   if (!session || !session?.roles.includes("admin")) {
+  //     return NextResponse.redirect(new URL("/login", request.url));
+  //   }
+  // }
 
   return NextResponse.next();
 }
