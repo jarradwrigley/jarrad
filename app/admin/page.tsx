@@ -126,7 +126,7 @@ export default async function AdminDashboardPage() {
           profilePic: profilePic || "",
         },
       });
-      revalidatePath("/admin/dashboard");
+      revalidatePath("/admin");
     } catch (error) {
       console.error("Error creating user:", error);
     }
@@ -153,7 +153,7 @@ export default async function AdminDashboardPage() {
           profilePic,
         },
       });
-      revalidatePath("/admin/dashboard");
+      revalidatePath("/admin");
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -168,7 +168,7 @@ export default async function AdminDashboardPage() {
       await prisma.user.delete({
         where: { id },
       });
-      revalidatePath("/admin/dashboard");
+      revalidatePath("/admin");
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -189,7 +189,7 @@ export default async function AdminDashboardPage() {
           stock,
         },
       });
-      revalidatePath("/admin/dashboard");
+      revalidatePath("/admin");
     } catch (error) {
       console.error("Error creating product:", error);
     }
@@ -212,7 +212,7 @@ export default async function AdminDashboardPage() {
           stock,
         },
       });
-      revalidatePath("/admin/dashboard");
+      revalidatePath("/admin");
     } catch (error) {
       console.error("Error updating product:", error);
     }
@@ -227,7 +227,7 @@ export default async function AdminDashboardPage() {
       await prisma.product.delete({
         where: { id },
       });
-      revalidatePath("/admin/dashboard");
+      revalidatePath("/admin");
     } catch (error) {
       console.error("Error deleting product:", error);
     }

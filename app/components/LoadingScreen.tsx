@@ -7,8 +7,10 @@ import Lottie from "lottie-react";
 import loadingAnimation from "@/public/icons/logo.svg";
 import { useStore } from "@/store/store";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 export default function LoadingScreen() {
+    const { data: session, status } = useSession();
   const { isLoading, isHydrated, setHydrated, setLoading } = useStore();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -40,7 +42,7 @@ export default function LoadingScreen() {
   if (!isMounted) return null;
 
   // Show loading screen whenever isLoading is true OR store is not hydrated
-  if (!isLoading && isHydrated) return null;
+  if (!isLoading && isHydrated && status !== "loading") return null;
 
   return (
     <div className="fixed inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
