@@ -7,9 +7,12 @@ import { usePathname } from "next/navigation";
 import VideoMaskedText from "./VideoMaskedText";
 import VideoMaskedLogo from "./MaskedLogo";
 import ShoppingBadge from "./ShoppingBadge";
+import { signOut, useSession } from "next-auth/react";
+import DropdownMenu from "./MenuDropdown";
 
 const Header = () => {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -137,9 +140,23 @@ const Header = () => {
 
           {/* User Actions */}
           <div className="flex items-center gap-4 h-full text-white">
-            <Link href="/login" className="hover:opacity-80 transition-opacity">
-              Log In
-            </Link>
+            {status === "authenticated" ? (
+              // <button
+              //   onClick={() => signOut()}
+              //   className="hover:opacity-80 transition-opacity cursor-pointer"
+              // >
+              //   <span>Log Out</span>
+              // </button>
+              <DropdownMenu />
+            ) : (
+              <Link
+                href="/login"
+                className="hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                Log In
+              </Link>
+            )}
+
             <Link href="/cart" className=" h-full transition-opacity">
               <ShoppingBadge />
             </Link>

@@ -1,9 +1,15 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs"; // or bcrypt
+
 
 declare module "next-auth" {
   interface User {
+    username: string;
+    roles: string[];
+    profilePic: string;
     token?: string;
   }
 }
@@ -16,7 +22,7 @@ const mockUsers = [
     name: "Admin User",
     username: "admin",
     password: "admin123", // In real app, this would be hashed
-    roles: ["Admin", "SuperAdmin"],
+    roles: ["admin", "superadmin"],
     profilePic: "/api/placeholder/100/100",
   },
   {
@@ -25,7 +31,7 @@ const mockUsers = [
     name: "Regular User",
     username: "user",
     password: "user123",
-    roles: ["User"],
+    roles: ["user"],
     profilePic: "/api/placeholder/100/100",
   },
   {
@@ -34,7 +40,7 @@ const mockUsers = [
     name: "Account Officer",
     username: "officer",
     password: "officer123",
-    roles: ["Account Officer"],
+    roles: ["accountofficer"],
     profilePic: "/api/placeholder/100/100",
   },
 ];
@@ -84,6 +90,41 @@ async function authenticateBackendUser(username: string, password: string) {
     return null;
   } catch (error) {
     console.error("Backend authentication error:", error);
+    return null;
+  }
+}
+
+async function authenticatePrismaUser(username: string, password: string) {
+  try {
+    // Find user by email or username
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: username }, { username: username }],
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    // Compare password with hashed password in database
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+      return null;
+    }
+
+    // Return user data (exclude password)
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      username: user.username,
+      roles: user.roles || ["guest"], // Assuming you have a roles field
+      profilePic: user.profilePic || "/api/placeholder/100/100",
+    };
+  } catch (error) {
+    console.error("Prisma authentication error:", error);
     return null;
   }
 }
@@ -161,9 +202,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Send properties to the client
       if (token) {
         session.user.id = token.id as string;
-        (session.user as any).username = token.username;
-        (session.user as any).roles = token.roles;
-        (session.user as any).profilePic = token.profilePic;
+        session.user.username = token.username as string;
+        session.user.roles = token.roles as string[];
+        session.user.profilePic = token.profilePic as string;
       }
       return session;
     },
