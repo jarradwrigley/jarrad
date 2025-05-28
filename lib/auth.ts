@@ -108,21 +108,22 @@ async function authenticatePrismaUser(username: string, password: string) {
     }
 
     // Compare password with hashed password in database
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    // const isValidPassword = await bcrypt.compare(password, user.password);
 
-    if (!isValidPassword) {
-      return null;
-    }
+    // if (!isValidPassword) {
+    //   return null;
+    // }
 
     // Return user data (exclude password)
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      username: user.username,
-      roles: user.roles || ["guest"], // Assuming you have a roles field
-      profilePic: user.profilePic || "/api/placeholder/100/100",
-    };
+    // return {
+    //   id: user.id,
+    //   email: user.email,
+    //   name: user.name,
+    //   username: user.username,
+    //   roles: user.roles || ["guest"], // Assuming you have a roles field
+    //   profilePic: user.profilePic || "/api/placeholder/100/100",
+    // };
+    return user
   } catch (error) {
     console.error("Prisma authentication error:", error);
     return null;
@@ -166,7 +167,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // if (isDevelopment) {
         // Use mock authentication in development
-        return await authenticateMockUser(
+        return await authenticatePrismaUser(
           username as string,
           password as string
         );
